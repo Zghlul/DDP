@@ -1,0 +1,20 @@
+def Kpersegi(sisi):
+    return 4*sisi
+def Lpersegi(sisi):
+    return sisi*sisi
+def Kpersegipanjang(panjang,lebar):
+    return 2*(panjang+lebar)
+def Lpersegipanjang(panjang,lebar):
+    return panjang*lebar
+def Ksegitiga(sisi1,sisi2,sisi3):
+    return sisi1+sisi2+sisi3
+def Lsegitiga(alas,tinggi):
+    return alas  * tinggi /2
+def Klingkaran(jari2):
+    return 2*22/7*jari2
+def Llingkaran(jari2):
+    return 22/7*jari2**2
+def Kjajargenjang(a,b):
+    return 2*(a+b)
+def Ljajargenjang(a,t):
+    return a*t
