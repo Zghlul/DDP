@@ -1,10 +1,52 @@
 import streamlit as st
+import rumuszakat
+from datetime import date
 
-st.sidebar.title ("Menu")
-Menu = st.sidebar.radio ("---", ["Home","Zakat Simpanan", "Zakat Penghasilan", "Zakat Peternakan"])
+st.set_page_config(page_title="Kalkulator Zakat", layout="centered")
+st.title("Zakat Mal")
 
-# Menu navigasi
-if Menu == "Home":
+# ======================
+# NAVIGASI
+# ======================
+menu = st.sidebar.radio(
+    "Menu",
+    ["Home", "Zakat Emas & Perak", "Zakat Penghasilan", "Zakat Peternakan"]
+)
+
+# ======================
+# FUNGSI WAJIB IDENTITAS
+# ======================
+def input_identitas():
+    col1, col2 = st.columns(2)
+    with col1:
+        nama = st.text_input("Nama Muzakki *")
+        nomor = st.text_input("Nomor HP *")
+    with col2:
+        domisili = st.text_input("Domisili *")
+        tanggal = st.date_input("Tanggal", value=date.today())
+    return nama, nomor, domisili, tanggal
+
+
+def validasi_identitas(nama, nomor, domisili):
+    return all([nama.strip(), nomor.strip(), domisili.strip()])
+
+
+def tampilkan_identitas(nama, nomor, domisili, tanggal):
+    st.info(
+        f"""
+**DATA MUZAKKI**
+- Nama      : {nama}
+- Nomor HP  : {nomor}
+- Domisili  : {domisili}
+- Tanggal   : {tanggal}
+"""
+    )
+
+
+# ======================
+# HOME
+# ======================
+if menu == "Home":
     st.title("APLIKASI SEDERHANA PERHITUNGN ZAKAT MAL")
     st.write ("----")
     st.header ("Welcome to zakat")
@@ -24,186 +66,123 @@ if Menu == "Home":
     with col3:
         st.write('3. Zakat Peternakan')
         st.image('https://awsimages.detik.net.id/community/media/visual/2022/08/11/kambing-makan-rumput-kering-untuk-cegah-kebakaran-hutan-3.jpeg?w=600&q=90',
-                 caption='Zakat peternakan adalah kewajiban zakat atas hewan ternak (seperti sapi, kambing, domba, dan unta) yang telah mencapai jumlah minimal tertentu (nisab) dan dimiliki selama satu tahun (haul). ')   
+                 caption='Zakat peternakan adalah kewajiban zakat atas hewan ternak (seperti sapi, kambing, domba, dan unta) yang telah mencapai jumlah minimal tertentu (nisab) dan dimiliki selama satu tahun (haul). ')
 
-# ZAKAT SIMPANAN
-elif Menu == "Zakat Simpanan":
-    st.title("Menghitung zakat Simpanan, Emas Dan Perak 🪙")
-    st.write ("Hitung zakat emas dan perak sesuai syari'at")
-    st.write ('---')
+# ======================
+# ZAKAT EMAS & PERAK
+# ======================
+elif menu == "Zakat Emas & Perak":
+    st.header("Zakat Emas & Perak")
 
-    # Nama Muzzaki
-    col1, col2 = st.columns(2)
-    with col1 :
-        nama = st.text_input ('Nama Muzzaki')
-        nomor = st.text_input ('Nomor Hp')
-    with col2 :
-        domisili = st.text_input('Domisili')
-        tanggal = st.date_input('tanggal')
-    st.write ('---')
+    nama, nomor, domisili, tanggal = input_identitas()
+    st.divider()
 
-    # Harga emas dan perak
-    harga_emas = st.number_input ('Masukan harga emas per gramm (Rp)', min_value=0, step=1000, format="%d")
-    harga_perak = st.number_input ('Masukan harga perak Per gram (Rp)', min_value=0, step=1000, format="%d")
+    emas = st.number_input("Berat emas (gram)", min_value=0.0, step=85.0)
+    harga_emas = st.number_input("Harga emas per gram (Rp)", min_value=0, step=100000)
 
-    # Masukan jumlah emas dan perak
-    emas = st.number_input ('Jumlah Emas (gram)', min_value=0, step=1000, format="%d")
-    perak = st.number_input ('Jumlah perak (gram)', min_value=0, step=1000, format="%d")
+    perak = st.number_input("Berat perak (gram)", min_value=0.0, step=595.0)
+    harga_perak = st.number_input("Harga perak per gram (Rp)", min_value=0, step=100000)
 
-    # rumus : harga * berat * 2,5%
-
-    if st.button ("Hitung Zakat") :
-        nisab_emas = 85 # gram
-        nisab_perak = 595 # gram
-        total_emas = emas * harga_emas
-        total_perak = perak * harga_perak
-
-        # zakat yang di keluarkan
-        zakat_emas = total_emas * 0.025 if emas >= nisab_emas else 0
-        zakat_perak = total_perak * 0.025 if perak >= nisab_perak else 0
-
-        st.subheader ('Hasil perhitungan')
-        # emas
-        if emas >= nisab_emas :
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili}. ')
-            st.success (f'✅ Di nyatakan bahwa Emas anda mencapai nisab. Jumlah Zakat emas yang harus dikeluarkan Rp {zakat_emas:,.0f}')
-        else :
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili}. ')
-            st.warning (f'⚠️ Emas anda belom mencapai nisab (minimal 85 gram). Maka tidak wajib zakat')
-        # perak
-        if perak >= nisab_perak :
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili}. ')
-            st.success (f'✅ Perak Anda sudah mencapai nisab. Jumlah Zakat perak yang harus dikeluarkan Rp {zakat_perak:,.0f}')
-        else :
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili}. ')
-            st.warning (f'⚠️ Perak Anda belom mencapai nisab (minimal 595 gram). Maka Tidak wajib zakat')
-
-# ZAKAT PENGHASILAN    
-elif Menu == 'Zakat Penghasilan':
-    st.title('Menghitung zakat penghasilan atau profesi 💰')
-    st.write ("Hitung zakat penghasilan (zakat profesi) dengan cepat. Zakat dihitung 2.5% dari penghasilan bersih tahunan jika melewati nisab (85 gram emas).")
-    st.write ('---')
-
-    # Nama Muzzaki
-    col1, col2 = st.columns(2)
-    with col1 :
-        nama = st.text_input ('Nama Muzzaki')
-        nomor = st.text_input ('Nomor Hp')
-    with col2 :
-        domisili = st.text_input('Domisili')
-        tanggal = st.date_input('tanggal')
-    st.write ('---')
-
-    col1, col2 = st.columns(2)
-    with col1 :
-         # penghasilan perbulan dan tahunan
-         income = st.number_input("Penghasilan (per periode)", min_value=0.0, step=10000.0, format="%.2f",
-                             help="Masukkan jumlah penghasilan (gaji, honor, dsb) untuk periode yang dipilih")
-    with col2 :
-         # biaya hidup
-         expenses = st.number_input("Biaya / kebutuhan pokok (per periode)", min_value=0.0, step=10000.0, format="%.2f",
-                               help="Biaya hidup atau pengeluaran yang mengurangi penghasilan")
-    
-    period = st.selectbox("Periode input", options=["Bulanan", "Tahunan"], index=0,
-                          help="Pilih apakah nilai diisi per bulan atau per tahun")
-    # pengaturan nisab
-    st.write ('---')
-    st.header("Pengaturan Nisab")
-    st.write("Nisab dihitung dari harga emas 85 gram nilai setara per tahun sekitar Rp 85.685.972 dan Rp 7.140.498 per bulan")
-    per_bulan = 7140498
-    per_tahun = 85685972
-
-    # perhitungan
-    PERIOD_MULTIPLIER = 12 if period == "Bulanan" else 1
-
-    if st.button ("Hitung Zakat") :
-        zakat = income - expenses
-        penghasilan_bersih_pertahun = zakat * PERIOD_MULTIPLIER
-        rumus_zakat = 0.025 # 2.5%
-
-        zakat_tahunan = penghasilan_bersih_pertahun * rumus_zakat if per_tahun else 0.0
-        zakat_per_periode = zakat_tahunan / PERIOD_MULTIPLIER
-
-        st.subheader ('Hasil perhitungan')
-        if penghasilan_bersih_pertahun >= per_tahun :
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili}. ')
-            st.success (f'✅ Zakat yang harus anda keluarkan sejumlah Rp {zakat_per_periode:,.2f}')
-        else :
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili}. ')
-            st.warning (f'⚠️ Anda belum mencapai nisab seharga emas (85 gram)')
-# zakat peternakan
-elif Menu == "Zakat Peternakan":
-    st.title ('Menghitung zakat peternakan kambing dan sapi 🐐')
-    st.write ("Menghitung zakat ternakan sesuai syari'at")
-    st.write ('---')
-
-     # Nama Muzzaki
-    col1, col2 = st.columns(2)
-    with col1 :
-        nama = st.text_input ('Nama Muzzaki')
-        nomor = st.text_input ('Nomor Hp')
-    with col2 :
-        domisili = st.text_input('Domisili')
-        tanggal = st.date_input('tanggal')
-    st.write ('---')
-
-    # jenis dan jumlah hewan
-    jenis = st.selectbox (
-        "pilih jenis ternak",
-        ['Kambing / Domba', 'Sapi / Kerbau']
-    )    
-    jumlah = st.number_input ("Masukan jumlah ternak anda", min_value=0, step=1)
-
-    # rumus zakat sapi dan kambing
-    def zakat_sapi(jumlah):
-        if jumlah < 30:
-            return ""
-        hasil = []
-        sisa = jumlah
-        jumlah_40 = sisa // 40
-        sisa = sisa % 40
-
-        jumlah_30 = sisa // 30
-        sisa = sisa % 30 
-
-        if jumlah_30 == 0 and jumlah_40 == 0:
-            if 30 <= jumlah <= 39:
-                return "1 ekor sapi / kerbau tabi umur 1 tahun"
-            elif 40 <= jumlah <= 59:
-                return "1 ekor sapi / kerbau musinnah umur 2 tahun"
-            
-        if jumlah_30 > 0:
-            hasil.append(f"{jumlah_30} ekor sapi / kerbau tabi umur 1 tahun")
-
-        if jumlah_40 > 0:
-            hasil.append(f"{jumlah_40} ekor sapi / kerbau musinnah umur 2 tahun")
-        return " dan" .join(hasil)
-
-    def zakat_kambing(jumlah):
-        if jumlah < 40:
-            return ""
-        elif 40 <= jumlah <= 120:
-            return "1 ekor kambing / domba"
-        elif 121 <= jumlah <= 200:
-            return "2 ekor kambing / domba"
-        elif 201 <= jumlah <= 300:
-            return "3 ekor kambing / domba"
-        elif 301 <= jumlah <= 400:
-            return "4 ekor kambing / domba"
+    if st.button("Hitung Zakat", key="btn_emas"):
+        if not validasi_identitas(nama, nomor, domisili):
+            st.error("❗ Nama, Nomor HP, dan Domisili wajib diisi")
         else:
-            tambahan = (jumlah - 401) // 100 + 1
-            total = 4 + tambahan
-            return f"{total} ekor kambing / domba umur 1 tahun"
-        
-    if st.button("Hitung Zakat"):
-        if jenis == "Sapi / Kerbau":
-            hasil = zakat_sapi(jumlah)
-        elif jenis == "Kambing / Domba":
-            hasil = zakat_kambing(jumlah)
+            tampilkan_identitas(nama, nomor, domisili, tanggal)
 
-        if hasil :
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili}')
-            st.success (f'✅ Zakat yang harus anda tunaikan adalah {hasil}')
+            zakat_emas = rumuszakat.hitung_zakat_emas(emas, harga_emas)
+            zakat_perak = rumuszakat.hitung_zakat_perak(perak, harga_perak)
+
+            if zakat_emas > 0:
+                st.success(f"✅ Zakat emas: Rp {zakat_emas:,.0f}")
+            else:
+                st.warning("⚠️ Emas belum mencapai nisab (85 gram)")
+
+            if zakat_perak > 0:
+                st.success(f"✅ Zakat perak: Rp {zakat_perak:,.0f}")
+            else:
+                st.warning("⚠️ Perak belum mencapai nisab (595 gram)")
+
+# ======================
+# ZAKAT PENGHASILAN
+# ======================
+elif menu == "Zakat Penghasilan":
+    st.header("Zakat Penghasilan")
+
+    nama, nomor, domisili, tanggal = input_identitas()
+    st.divider()
+
+    income = st.number_input("Penghasilan", min_value=0.0, step=100_000.0)
+    expenses = st.number_input("Pengeluaran", min_value=0.0, step=100_000.0)
+    period = st.selectbox("Periode", ["Bulanan", "Tahunan"])
+
+    if st.button("Hitung Zakat", key="btn_penghasilan"):
+        if not validasi_identitas(nama, nomor, domisili):
+            st.error("❗ Nama, Nomor HP, dan Domisili wajib diisi")
         else:
-            st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili},')
-            st.warning(f'⚠️ Maaf, hewan ternak anda belum mencapai nisab. Tidak wajib zakat')
+            tampilkan_identitas(nama, nomor, domisili, tanggal)
+
+            hasil = rumuszakat.hitung_zakat_penghasilan(
+                income, expenses, period
+            )
+
+            if hasil > 0:
+                st.success(f"✅ Zakat yang harus dibayar: Rp {hasil:,.2f}")
+            else:
+                st.warning("⚠️ Penghasilan belum mencapai nisab")
+
+# ======================
+# ZAKAT PETERNAKAN
+# ======================
+elif menu == "Zakat Peternakan":
+    st.header("Zakat Peternakan")
+
+    nama, nomor, domisili, tanggal = input_identitas()
+    st.divider()
+
+    jenis = st.selectbox("Jenis ternak", ["Sapi / Kerbau", "Kambing / Domba"])
+    jumlah = st.number_input("Jumlah ternak", min_value=0, step=1)
+
+    if st.button("Hitung Zakat", key="btn_peternakan"):
+        if not validasi_identitas(nama, nomor, domisili):
+            st.error("❗ Nama, Nomor HP, dan Domisili wajib diisi")
+        else:
+            tampilkan_identitas(nama, nomor, domisili, tanggal)
+
+            if jenis == "Sapi / Kerbau":
+                hasil = rumuszakat.zakat_sapi(jumlah)
+            else:
+                hasil = rumuszakat.zakat_kambing(jumlah)
+
+            if hasil:
+                st.success(f"✅ Zakat yang harus ditunaikan: {hasil}")
+            else:
+                st.warning("⚠️ Jumlah ternak belum mencapai nisab")
+
+# ======================
+# FOOTER
+# ======================
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #0f172a;
+        color: #f8fafc;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 14px;
+        z-index: 100;
+    }
+    </style>
+
+    <div class="footer">
+        📞 <b>Kontak</b> : 085715118015 &nbsp; | &nbsp;
+        📧 <b>Email</b> : farelzaghlul@gmail.com &nbsp; | &nbsp;
+        📍 <b>Alamat</b> : STT Nurul Fikri
+    </div>
+    """,
+    unsafe_allow_html=True
+)
