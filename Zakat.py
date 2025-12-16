@@ -207,3 +207,29 @@ elif Menu == "Zakat Peternakan":
         else:
             st.success (f'Nama {nama}, Nomor hp {nomor}, Domisili {domisili},')
             st.warning(f'⚠️ Maaf, hewan ternak anda belum mencapai nisab. Tidak wajib zakat')
+
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #0f172a;
+        color: #f8fafc;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 14px;
+        z-index: 100;
+    }
+    </style>
+
+    <div class="footer">
+        📞 <b>Kontak</b> : 085715118015 &nbsp; | &nbsp;
+        📧 <b>Email</b> : farelzaghlul@gmail.com &nbsp; | &nbsp;
+        📍 <b>Alamat</b> : STT Nurul Fikri
+    </div>
+    """,
+    unsafe_allow_html=True
+)
